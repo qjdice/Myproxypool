@@ -23,7 +23,7 @@ class ValidityTester(object):
         self._raw_proxy = None # 用于存储获取到的待检验代理
         self._usable_proxy = [] # 用于存储检验后可用的代理列表
 
-    # 设置单条代理
+    # 设置待检测代理与数据库连接
     def set_raw_proxy(self,proxy):
         self._raw_proxy = proxy
         self._conn = RedisConnect()
@@ -32,13 +32,13 @@ class ValidityTester(object):
     async def test_signle_proxy(self,proxy): # 声明这是一个异步函数
         ''' 检验代理将其加入到数据库中  '''
         try:
-            async with aiohttp.ClientSession() as session: # 声明这一步操作是异步的 不需要同步等待
+            async with aiohttp.ClientSession() as session: 
                 try:
                     if isinstance(proxy,bytes):
                         proxy = proxy.decode('utf-8')
                     real_proxy = 'http://' + proxy
                     print('正在检验',proxy)
-                    async with session.get(self.test_api,proxy=real_proxy,timeout=get_proxy_timeout) as response: # 同上
+                    async with session.get(self.test_api,proxy=real_proxy,timeout=get_proxy_timeout) as response: 
                         if response.status == 200:
                             self._conn.put(proxy)
                             print('检验成功',proxy)
