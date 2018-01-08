@@ -1,7 +1,6 @@
 <?php 
 $config = include('config.php');
 
-print_r($config);
 class Proxy{
 
     protected $db_host = null;
@@ -24,8 +23,18 @@ class Proxy{
     }
 
     public function get(){
-        exit(self::$connect->rpop("proxies"));
-        
+        $res = self::$connect->rpop("proxies");
+        if($res){
+            die($res);
+        }else{
+            die('Inval proxies');
+        }
+    }
+
+    public function len(){
+
+        $res = self::$connect->llen('proxies');
+        exit((string) $res);
     }
 }
 
